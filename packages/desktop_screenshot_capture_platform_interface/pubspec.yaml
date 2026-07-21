@@ -1,0 +1,29 @@
+name: desktop_screenshot_capture_platform_interface
+description: Platform interface for desktop screenshot capture POC.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.7.2
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  plugin_platform_interface: ^2.0.2
+  equatable: ^2.0.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  plugin:
+    platforms:
+      macos:
+        pluginClass: none
+      windows:
+        pluginClass: none
+      linux:
+        pluginClass: none

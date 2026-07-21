@@ -1,0 +1,56 @@
+# Oxy Capture monorepo
+
+# --- OS ---
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# --- IDE / editors ---
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# --- Flutter / Dart (all packages) ---
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub-cache/
+**/.pub/
+**/build/
+**/doc/api/
+**/coverage/
+app.*.symbols
+app.*.map.json
+
+# --- Release artifacts ---
+/dist/
+
+# --- Local QA notes ---
+**/acceptance-results.md
+
+# --- Secrets ---
+.env
+.env.*
+*.pem
+credentials.json
+
+# --- macOS / Xcode ---
+**/Pods/
+**/xcuserdata/
+**/*.xcuserstate
+**/DerivedData/
+
+# --- Windows / Visual Studio ---
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# --- Linux / CMake ---
+**/cmake-build-*/
+
+# --- FVM ---
+.fvm/flutter_sdk

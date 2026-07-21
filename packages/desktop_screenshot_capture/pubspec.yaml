@@ -1,0 +1,35 @@
+name: desktop_screenshot_capture
+description: Federated desktop screenshot capture plugin for Oxy Capture.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.7.2
+  flutter: '>=3.3.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  desktop_screenshot_capture_platform_interface:
+    path: ../desktop_screenshot_capture_platform_interface
+  desktop_screenshot_capture_macos:
+    path: ../desktop_screenshot_capture_macos
+  desktop_screenshot_capture_windows:
+    path: ../desktop_screenshot_capture_windows
+  desktop_screenshot_capture_linux:
+    path: ../desktop_screenshot_capture_linux
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  plugin:
+    platforms:
+      macos:
+        default_package: desktop_screenshot_capture_macos
+      windows:
+        default_package: desktop_screenshot_capture_windows
+      linux:
+        default_package: desktop_screenshot_capture_linux
