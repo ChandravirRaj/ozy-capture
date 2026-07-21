@@ -66,8 +66,14 @@ add_library(${PLUGIN_NAME} SHARED
 apply_standard_settings(${PLUGIN_NAME})
 
 # Plugin uses C++ exceptions (throw/catch) and C++/WinRT; Flutter defaults to
-# _HAS_EXCEPTIONS=0 via apply_standard_settings.
-target_compile_definitions(${PLUGIN_NAME} PRIVATE "_HAS_EXCEPTIONS=1")
+# _HAS_EXCEPTIONS=0 via apply_standard_settings. NOMINMAX avoids Windows.h
+# clobbering std::min/std::max. Silence STL experimental-coroutine hard error
+# from CppWinRT's /await path on newer MSVC.
+target_compile_definitions(${PLUGIN_NAME} PRIVATE
+  "_HAS_EXCEPTIONS=1"
+  "_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS"
+  "NOMINMAX"
+)
 
 # Symbols are hidden by default to reduce the chance of accidental conflicts
 # between plugins. This should not be removed; any symbols that should be
@@ -131,7 +137,11 @@ add_executable(${TEST_RUNNER}
   ${PLUGIN_SOURCES}
 )
 apply_standard_settings(${TEST_RUNNER})
-target_compile_definitions(${TEST_RUNNER} PRIVATE "_HAS_EXCEPTIONS=1")
+target_compile_definitions(${TEST_RUNNER} PRIVATE
+  "_HAS_EXCEPTIONS=1"
+  "_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS"
+  "NOMINMAX"
+)
 target_compile_features(${TEST_RUNNER} PUBLIC cxx_std_17)
 set_target_properties(${TEST_RUNNER} PROPERTIES
   VS_PROJECT_IMPORT

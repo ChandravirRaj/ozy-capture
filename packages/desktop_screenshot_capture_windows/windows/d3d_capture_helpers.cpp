@@ -2,6 +2,7 @@
 
 #include <dxgi.h>
 #include <winrt/base.h>
+#include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3D11.h>
 
@@ -58,7 +59,7 @@ CapturedFrame CopyFrameSurfaceToBgra(
     ID3D11DeviceContext* context) {
   const auto surface = frame.Surface();
   const auto access = surface.as<
-      winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
+      ::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
 
   Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
   const HRESULT query_hr =

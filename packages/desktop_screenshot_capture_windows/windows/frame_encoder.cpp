@@ -134,7 +134,7 @@ int FrameEncoder::Encode(const std::vector<uint8_t>& bgra_pixels,
     PROPBAG2 option = {};
     option.pstrName = const_cast<LPOLESTR>(L"ImageQuality");
     const float normalized_quality =
-        static_cast<float>(std::max(0, std::min(quality, 100))) / 100.0f;
+        static_cast<float>((std::max)(0, (std::min)(quality, 100))) / 100.0f;
     VARIANT variant;
     VariantInit(&variant);
     variant.vt = VT_R4;

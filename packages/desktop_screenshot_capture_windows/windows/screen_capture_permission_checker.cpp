@@ -19,7 +19,7 @@ constexpr const char* kDeniedGuidance =
 flutter::EncodableMap BaseDiagnostics() {
   flutter::EncodableMap diagnostics;
   diagnostics[flutter::EncodableValue("isSupported")] =
-      flutter::EncodableValue(IsCaptureSupported());
+      flutter::EncodableValue(ScreenCapturePermissionChecker::IsCaptureSupported());
 
   OSVERSIONINFOEXW version_info = {};
   version_info.dwOSVersionInfoSize = sizeof(version_info);

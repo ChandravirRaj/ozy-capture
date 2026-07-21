@@ -7,6 +7,7 @@
 
 #include <windows.graphics.capture.interop.h>
 #include <winrt/base.h>
+#include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3D11.h>
 
@@ -124,6 +125,7 @@ flutter::EncodableMap CaptureSessionManager::PrepareCapture(
 
   ActiveSession* session_ptr = session.get();
   session->frame_arrived_revoker = session->frame_pool.FrameArrived(
+      winrt::auto_revoke,
       [session_ptr](const winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool& sender,
                     const winrt::Windows::Foundation::IInspectable&) {
         const auto frame = sender.TryGetNextFrame();
