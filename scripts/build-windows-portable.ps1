@@ -34,12 +34,16 @@ Push-Location $AppDir
 try {
     flutter pub get
     if ($LASTEXITCODE -ne 0) {
-        throw 'flutter pub get failed.'
+        exit $LASTEXITCODE
     }
 
-    flutter build windows --release
+    $buildArgs = @('build', 'windows', '--release')
+    if ($env:CI -eq 'true') {
+        $buildArgs += '-v'
+    }
+    & flutter @buildArgs
     if ($LASTEXITCODE -ne 0) {
-        throw 'flutter build windows --release failed.'
+        exit $LASTEXITCODE
     }
 }
 finally {

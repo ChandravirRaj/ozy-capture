@@ -30,9 +30,16 @@ jobs:
         shell: pwsh
         run: flutter config --enable-windows-desktop
 
-      - name: Flutter doctor
+      - name: Precache Windows desktop tooling
         shell: pwsh
-        run: flutter doctor -v
+        run: |
+          flutter precache --windows
+          flutter doctor -v
+
+      - name: Configure MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
       - name: Build portable ZIP
         shell: pwsh
