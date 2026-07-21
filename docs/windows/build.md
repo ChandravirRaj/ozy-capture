@@ -27,6 +27,25 @@ Output executable:
 build/windows/x64/runner/Release/oxy_capture.exe
 ```
 
+Portable ZIP (from repo root on Windows):
+
+```powershell
+.\scripts\build-windows-portable.ps1
+```
+
+Output: `dist/OxyCapture-<version>-windows-x64.zip`
+
+## CI build (GitHub Actions)
+
+Build on GitHub without a local Windows PC (recommended when developing on macOS):
+
+1. Push the repository to GitHub (workflow file: `.github/workflows/build-windows.yml`)
+2. Open **Actions** → **Build Windows** → **Run workflow** → **Run workflow**
+3. When the job completes, open the run → **Artifacts** → download **OxyCapture-windows-x64**
+4. Extract the ZIP to a folder (e.g. `C:\Apps\OxyCapture\`) and run `oxy_capture.exe`
+
+The workflow uses a `windows-latest` runner with Visual Studio 2022 and runs `scripts/build-windows-portable.ps1`. Artifacts are retained for 30 days.
+
 ## Native capture API
 
 The Windows plugin uses **Windows Graphics Capture (WGC)**:

@@ -55,7 +55,22 @@ Install as a normal Mac app:
 
 ## Platform notes
 
-**Windows builds** must run on a Windows machine (`flutter build windows` is not supported from macOS). Use the portable packaging script on Windows:
+**Windows builds** cannot run on macOS (`flutter build windows` requires a Windows host). Recommended options:
+
+### GitHub Actions (no local Windows PC)
+
+After pushing this repository, build from the GitHub UI:
+
+1. Open **Actions** → **Build Windows** → **Run workflow** → **Run workflow**
+2. Wait for the job to finish (~5–15 minutes on first run)
+3. Open the completed run → **Artifacts** → download **OxyCapture-windows-x64**
+4. Extract the ZIP and run `oxy_capture.exe` (keep all DLLs and the `data\` folder together)
+
+See [docs/windows/build.md](docs/windows/build.md) for details.
+
+### Local Windows build
+
+On a Windows machine with Flutter and Visual Studio 2022:
 
 ```powershell
 .\scripts\build-windows-portable.ps1
