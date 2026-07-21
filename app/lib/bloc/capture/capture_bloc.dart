@@ -57,7 +57,6 @@ class CaptureBloc extends Bloc<CaptureBlocEvent, CaptureState> {
     });
 
     unawaited(_bootstrapWindowService());
-    add(const CheckPermissionRequested());
   }
 
   final DesktopScreenshotCapture _capture;
@@ -100,7 +99,9 @@ class CaptureBloc extends Bloc<CaptureBlocEvent, CaptureState> {
       final status = await _capture.getPermissionStatus();
       final nextState = state.copyWith(permissionStatus: status, clearError: true);
       emit(nextState);
-      if (status.isUsable && !nextState.backgroundModeEnabled) {
+      if (status.isUsable &&
+          nextState.consentAccepted &&
+          !nextState.backgroundModeEnabled) {
         add(const PermissionGrantedBackgroundMode());
       }
       _scheduleAutoStartIfNeeded(nextState);

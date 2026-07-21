@@ -155,6 +155,11 @@ bool ProbeMonitorCapture(HMONITOR monitor, std::string* error_message) {
       *error_message = error.what();
     }
     return false;
+  } catch (...) {
+    if (error_message != nullptr) {
+      *error_message = "Unknown error while probing monitor capture.";
+    }
+    return false;
   }
 }
 

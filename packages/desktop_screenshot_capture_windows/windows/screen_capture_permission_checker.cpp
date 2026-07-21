@@ -79,26 +79,42 @@ PermissionEvaluation ScreenCapturePermissionChecker::Evaluate() {
     evaluation.diagnostics[flutter::EncodableValue("probeError")] =
         flutter::EncodableValue(error.what());
     return evaluation;
+  } catch (...) {
+    evaluation.result = PermissionResult::kDenied;
+    evaluation.guidance = kDeniedGuidance;
+    evaluation.diagnostics[flutter::EncodableValue("probeError")] =
+        flutter::EncodableValue("Unknown error while evaluating capture permission.");
+    return evaluation;
   }
 }
 
 flutter::EncodableMap ScreenCapturePermissionChecker::PermissionStatusMap() {
-  const PermissionEvaluation evaluation = Evaluate();
+  try {
+    const PermissionEvaluation evaluation = Evaluate();
 
-  flutter::EncodableMap map;
-  map[flutter::EncodableValue("platform")] = flutter::EncodableValue("windows");
-  map[flutter::EncodableValue("bundleId")] = flutter::EncodableValue("dev.oxy.oxyCapture");
-  map[flutter::EncodableValue("diagnostics")] =
-      flutter::EncodableValue(evaluation.diagnostics);
+    flutter::EncodableMap map;
+    map[flutter::EncodableValue("platform")] = flutter::EncodableValue("windows");
+    map[flutter::EncodableValue("bundleId")] = flutter::EncodableValue("dev.oxy.oxyCapture");
+    map[flutter::EncodableValue("diagnostics")] =
+        flutter::EncodableValue(evaluation.diagnostics);
 
-  if (evaluation.result == PermissionResult::kGranted) {
-    map[flutter::EncodableValue("state")] = flutter::EncodableValue("granted");
-  } else {
+    if (evaluation.result == PermissionResult::kGranted) {
+      map[flutter::EncodableValue("state")] = flutter::EncodableValue("granted");
+    } else {
+      map[flutter::EncodableValue("state")] = flutter::EncodableValue("denied");
+      map[flutter::EncodableValue("guidanceMessage")] =
+          flutter::EncodableValue(evaluation.guidance);
+    }
+    return map;
+  } catch (...) {
+    flutter::EncodableMap map;
+    map[flutter::EncodableValue("platform")] = flutter::EncodableValue("windows");
+    map[flutter::EncodableValue("bundleId")] = flutter::EncodableValue("dev.oxy.oxyCapture");
     map[flutter::EncodableValue("state")] = flutter::EncodableValue("denied");
     map[flutter::EncodableValue("guidanceMessage")] =
-        flutter::EncodableValue(evaluation.guidance);
+        flutter::EncodableValue(kDeniedGuidance);
+    return map;
   }
-  return map;
 }
 
 }  // namespace desktop_screenshot_capture_windows

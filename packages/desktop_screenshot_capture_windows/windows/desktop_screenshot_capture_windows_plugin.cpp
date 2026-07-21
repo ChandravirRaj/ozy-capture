@@ -99,7 +99,13 @@ void DesktopScreenshotCaptureWindowsPlugin::RegisterWithRegistrar(
 }
 
 DesktopScreenshotCaptureWindowsPlugin::DesktopScreenshotCaptureWindowsPlugin() {
-  winrt::init_apartment(winrt::apartment_type::multi_threaded);
+  try {
+    // Match Flutter runner's COINIT_APARTMENTTHREADED (STA). Requesting MTA
+    // after STA is already active throws RPC_E_CHANGED_MODE and aborts startup.
+    winrt::init_apartment(winrt::apartment_type::single_threaded);
+  } catch (const winrt::hresult_error&) {
+    // Apartment already initialized by the Flutter runner. Safe to continue.
+  }
 }
 
 DesktopScreenshotCaptureWindowsPlugin::~DesktopScreenshotCaptureWindowsPlugin() {
