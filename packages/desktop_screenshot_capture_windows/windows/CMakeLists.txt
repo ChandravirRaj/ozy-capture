@@ -16,6 +16,24 @@ cmake_policy(VERSION 3.14...3.25)
 # not be changed
 set(PLUGIN_NAME "desktop_screenshot_capture_windows_plugin")
 
+# C++/WinRT projection headers for Windows.Graphics.Capture and related APIs.
+find_program(NUGET_EXE NAMES nuget)
+if(NOT NUGET_EXE)
+  message(FATAL_ERROR "nuget.exe not found. Install NuGet and ensure it is on PATH.")
+endif()
+execute_process(
+  COMMAND ${NUGET_EXE} install Microsoft.Windows.CppWinRT
+          -Version 2.0.240405.15
+          -ExcludeVersion
+          -OutputDirectory ${CMAKE_BINARY_DIR}/packages
+  RESULT_VARIABLE CPPWINRT_NUGET_RESULT
+)
+if(NOT CPPWINRT_NUGET_RESULT EQUAL 0)
+  message(FATAL_ERROR "Failed to install Microsoft.Windows.CppWinRT via NuGet.")
+endif()
+set(CPPWINRT_PACKAGE_DIR
+  "${CMAKE_BINARY_DIR}/packages/Microsoft.Windows.CppWinRT")
+
 # Any new source files that you add to the plugin should be added here.
 list(APPEND PLUGIN_SOURCES
   "capture_error_codes.cpp"
@@ -47,11 +65,17 @@ add_library(${PLUGIN_NAME} SHARED
 # full control over build settings.
 apply_standard_settings(${PLUGIN_NAME})
 
+# Plugin uses C++ exceptions (throw/catch) and C++/WinRT; Flutter defaults to
+# _HAS_EXCEPTIONS=0 via apply_standard_settings.
+target_compile_definitions(${PLUGIN_NAME} PRIVATE "_HAS_EXCEPTIONS=1")
+
 # Symbols are hidden by default to reduce the chance of accidental conflicts
 # between plugins. This should not be removed; any symbols that should be
 # exported should be explicitly exported with the FLUTTER_PLUGIN_EXPORT macro.
 set_target_properties(${PLUGIN_NAME} PROPERTIES
-  CXX_VISIBILITY_PRESET hidden)
+  CXX_VISIBILITY_PRESET hidden
+  VS_PROJECT_IMPORT
+    "${CPPWINRT_PACKAGE_DIR}/build/native/Microsoft.Windows.CppWinRT.props")
 target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
 target_compile_features(${PLUGIN_NAME} PUBLIC cxx_std_17)
 
@@ -66,6 +90,8 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE
   dxgi
   windowsapp
   windowscodecs
+  ole32
+  "${CPPWINRT_PACKAGE_DIR}/build/native/Microsoft.Windows.CppWinRT.targets"
 )
 
 # List of absolute paths to libraries that should be bundled with the plugin.
@@ -105,7 +131,11 @@ add_executable(${TEST_RUNNER}
   ${PLUGIN_SOURCES}
 )
 apply_standard_settings(${TEST_RUNNER})
+target_compile_definitions(${TEST_RUNNER} PRIVATE "_HAS_EXCEPTIONS=1")
 target_compile_features(${TEST_RUNNER} PUBLIC cxx_std_17)
+set_target_properties(${TEST_RUNNER} PROPERTIES
+  VS_PROJECT_IMPORT
+    "${CPPWINRT_PACKAGE_DIR}/build/native/Microsoft.Windows.CppWinRT.props")
 target_include_directories(${TEST_RUNNER} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(${TEST_RUNNER} PRIVATE
   flutter_wrapper_plugin
@@ -113,6 +143,8 @@ target_link_libraries(${TEST_RUNNER} PRIVATE
   dxgi
   windowsapp
   windowscodecs
+  ole32
+  "${CPPWINRT_PACKAGE_DIR}/build/native/Microsoft.Windows.CppWinRT.targets"
 )
 target_link_libraries(${TEST_RUNNER} PRIVATE gtest_main gmock)
 # flutter_wrapper_plugin has link dependencies on the Flutter DLL.

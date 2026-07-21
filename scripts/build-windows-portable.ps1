@@ -40,10 +40,30 @@ try {
     $buildArgs = @('build', 'windows', '--release')
     if ($env:CI -eq 'true') {
         $buildArgs += '-v'
-    }
-    & flutter @buildArgs
-    if ($LASTEXITCODE -ne 0) {
-        exit $LASTEXITCODE
+        $buildLog = Join-Path $env:TEMP 'oxy-capture-windows-build.log'
+        $previousEap = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        try {
+            & flutter @buildArgs *>&1 | Tee-Object -FilePath $buildLog
+            $buildExit = $LASTEXITCODE
+        } finally {
+            $ErrorActionPreference = $previousEap
+        }
+        if ($buildExit -ne 0) {
+            Write-Host ''
+            Write-Host '=== MSVC / build error lines ==='
+            if (Test-Path $buildLog) {
+                Select-String -Path $buildLog -Pattern 'error C\d+|fatal error|: error ' |
+                    Select-Object -First 50 |
+                    ForEach-Object { $_.Line }
+            }
+            exit $buildExit
+        }
+    } else {
+        & flutter @buildArgs
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
     }
 }
 finally {

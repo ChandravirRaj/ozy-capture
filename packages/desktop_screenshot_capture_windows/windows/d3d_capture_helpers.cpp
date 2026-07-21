@@ -1,6 +1,7 @@
 #include "d3d_capture_helpers.h"
 
 #include <dxgi.h>
+#include <winrt/base.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3D11.h>
 

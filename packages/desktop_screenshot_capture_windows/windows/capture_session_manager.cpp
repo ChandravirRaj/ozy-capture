@@ -6,11 +6,13 @@
 #include "screen_capture_permission_checker.h"
 
 #include <windows.graphics.capture.interop.h>
+#include <winrt/base.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3D11.h>
 
 #include <chrono>
 #include <condition_variable>
+#include <ctime>
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>

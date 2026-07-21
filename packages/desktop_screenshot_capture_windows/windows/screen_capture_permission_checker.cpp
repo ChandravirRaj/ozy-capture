@@ -3,6 +3,8 @@
 #include "d3d_capture_helpers.h"
 #include "display_enumerator.h"
 
+#include <windows.h>
+#include <winrt/base.h>
 #include <winrt/Windows.Graphics.Capture.h>
 
 namespace desktop_screenshot_capture_windows {
